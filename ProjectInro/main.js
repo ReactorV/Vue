@@ -6,6 +6,7 @@ const app = new Vue({
         image: './green-socks.png',
         altText: 'A pair of socks',
         onSale: true,
+        inStock: true,
         inventory: 2,
         details: ['80% cotton', '20% polyester', 'Gender-neutral'],
         variants: [
@@ -28,7 +29,7 @@ const app = new Vue({
             this.cart += 1
         },
         deleteFromCart() {
-            if(this.cart > 0) {
+            if (this.cart > 0) {
                 this.cart -= 1
             }
         },
