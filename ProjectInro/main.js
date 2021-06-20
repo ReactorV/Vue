@@ -37,10 +37,6 @@ Vue.component('product', {
                 >
                 </div>
 
-                <div class="cart">
-                    Cart ({{ cart }})
-                </div>
-
                 <button
                     v-on:click="addToCart"
                     :disabled="!inStock"
@@ -48,7 +44,13 @@ Vue.component('product', {
                 >
                     Add to cart
                 </button>
-                <button v-on:click="deleteFromCart">Remove from cart</button>
+                <button 
+                    v-on:click="removeFromCart"
+                    :disabled="!inStock"
+                    :class="{ disabledButton: !inStock }"
+                >
+                    Remove from cart
+                </button>
 
             </div>
         </div>
@@ -67,7 +69,7 @@ Vue.component('product', {
                     variantId: 2234,
                     variantColor: 'green',
                     variantImage: './green-socks.png',
-                    variantQuantity: 0,
+                    variantQuantity: 5,
                     variantOnSale: true
 
                 },
@@ -79,18 +81,15 @@ Vue.component('product', {
                     variantOnSale: false
                 }
             ],
-            sizes: ["XS", "S", "M", "L", "XL"],
-            cart: 0
+            sizes: ["XS", "S", "M", "L", "XL"]
         }
     },
     methods: {
         addToCart () {
-            this.cart += 1
+           this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId)
         },
-        deleteFromCart() {
-            if (this.cart > 0) {
-                this.cart -= 1
-            }
+        removeFromCart() {
+            this.$emit('remove-from-cart', this.variants[this.selectedVariant].variantId)
         },
         updateProduct(index) {
             this.selectedVariant = index
@@ -133,6 +132,18 @@ Vue.component('product-details', {
 const app = new Vue({
     el: '#app',
     data: {
-        premium: false
+        premium: false,
+        cart: []
+    },
+    methods: {
+        addToCart(id) {
+            this.cart.push(id)
+        },
+        removeFromCart(id) {
+            const hasItem = this.cart.findIndex((itemId) => itemId === id)
+            if (hasItem !== -1) {
+                this.cart.splice(hasItem, 1)
+            }
+        }
     }
 })
